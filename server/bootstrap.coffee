@@ -1,27 +1,10 @@
 Meteor.startup ->
-  # Stickies
-  # - title
-  # - creation date
-  # - owner: User
-  # - cell: Cell
-  # stickies = [
-  #   {
-  #     title: ''
-  #     creationDate:
-  #     cell:
-  #   },
-  #   {
-  #     title:
-  #     creationDate:
-  #     cell:
-  #   }
-  # ]
+  _bootstrapLanes()
+  _bootstrapSteps()
+  _bootstrapCells()
+  _bootstrapStickies()
 
-  # Lanes
-  # - name
-  # - cells: Cells
-  # - limit
-  lanes = [
+lanes = [
     {
       id: 1
       name: 'Theme'
@@ -49,11 +32,6 @@ Meteor.startup ->
     }
   ]
 
-  # Steps
-  # - name
-  # - cells: Cells
-  # - limit
-  # - type: [buffer|normal]
   steps = [
     {
       id: 1
@@ -92,33 +70,51 @@ Meteor.startup ->
     }
   ]
 
-  # Board
+_bootstrapLanes = ->
+  Lanes.remove {}
+  Lanes.insert lane for lane in lanes
 
-  # Users
-  # - from package
+_bootstrapSteps = ->
 
-  # Cells
-  # - wipStickies: Stickies
-  # - doneStickies: Stickies
-  # - lane: Lane
-  # - step: Step
+  Steps.remove {}
+  Steps.insert step for step in steps
 
-  if Lanes.find().count() is 0
-    Lanes.insert lane for lane in lanes
+_bootstrapCells = ->
+  Cells.remove {}
 
-  if Steps.find().count() is 0
-    Steps.insert step for step in steps
+  for lane in lanes
+    for step in steps
+      Cells.insert
+        wipStickies: []
+        doneStickies: []
+        lane: lane.id
+        step: step.id
 
-  if Cells.find().count() is 0
-    for lane in lanes
-      do (lane) ->
-        for step in steps
-          do (steps) ->
-            Cells.insert
-              wipStickies: []
-              doneStickies: []
-              lane: lane.id
-              step: step.id
+_bootstrapStickies = ->
+  stickies = [
+    {
+      lane: 2
+      step: 3
+      title: 'Recommended Ideas'
+      creationDate: new Date('2012-10-23')
+    },
+    {
+      lane: 1
+      step: 3
+      title: 'Flickr Image Upload'
+      creationDate: new Date('2012-11-05')
+    }
+  ]
+
+  for sticky in stickies
+    do (sticky) ->
+      Cells.update { lane: sticky.lane, step: sticky.step }, $addToSet:
+        wipStickies:
+          title: sticky.title
+          creationDate: sticky.creationDate
+
+
+
 
 
 

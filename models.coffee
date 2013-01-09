@@ -1,10 +1,3 @@
-# Stickies
-# - title
-# - creation date
-# - owner: User
-# - cell: Cell
-Stickies = new Meteor.Collection 'stickies'
-
 # Lanes
 # - name
 # - cells: Cells
@@ -24,7 +17,7 @@ Steps = new Meteor.Collection 'steps'
 # - from package
 
 # Cells
-# - wipStickies: Stickies
+# - wipStickies: [Stickies]
 # - doneStickies: Stickies
 # - lane: Lane
 # - step: Step
