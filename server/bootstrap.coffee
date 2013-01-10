@@ -1,8 +1,9 @@
 Meteor.startup ->
-  _bootstrapLanes()
-  _bootstrapSteps()
-  _bootstrapCells()
-  _bootstrapStickies()
+  if Cells.find().count() is 0
+    _bootstrapLanes()
+    _bootstrapSteps()
+    _bootstrapCells()
+    _bootstrapStickies()
 
 lanes = [
   {
@@ -111,7 +112,7 @@ _bootstrapCells = ->
 _bootstrapStickies = ->
   for sticky in stickies
     Cells.update { lane: sticky.lane, step: sticky.step }, $addToSet:
-      wipStickies:
+      doneStickies:
         id: sticky.id
         title: sticky.title
         creationDate: sticky.creationDate

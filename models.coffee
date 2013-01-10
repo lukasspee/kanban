@@ -23,15 +23,18 @@ Steps = new Meteor.Collection 'steps'
 # - step: Step
 Cells = new Meteor.Collection 'cells'
 
-Cells.moveSticky = (stickyId, laneId, stepId) ->
-  cell = Cells.findByLaneAndStep laneId, stepId
-  if cell
-    sticky = _.find cell.wipStickies, (s) -> s.id is stickyId
-    if sticky
-      Cells.moveStickyToDone sticky, laneId, stepId
-    else
-      sticky = _.find cell.doneStickies, (s) -> s.id is stickyId
-      Cells.moveStickyToNextLane sticky, laneId, stepId if sticky
+Meteor.methods
+  moveSticky: (stickyId, laneId, stepId) ->
+    console.log [stickyId, laneId, stepId]
+    cell = Cells.findByLaneAndStep laneId, stepId
+    console.log cell
+    if cell
+      sticky = _.find cell.wipStickies, (s) -> s.id is stickyId
+      if sticky
+        Cells.moveStickyToDone sticky, laneId, stepId
+      else
+        sticky = _.find cell.doneStickies, (s) -> s.id is stickyId
+        Cells.moveStickyToNextLane sticky, laneId, stepId if sticky
 
 Cells.moveStickyToDone = (sticky, laneId, stepId) ->
   Cells.update { lane: laneId, step: stepId }, $push:
